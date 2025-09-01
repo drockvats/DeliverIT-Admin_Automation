@@ -22,10 +22,10 @@ test.describe('Brands Page Tests', () => {
 
   });
 
-  // test('Verify navigation to Brands page', async ({ page }) => {
-  //   await expect(page.getByRole('heading', { name: 'Brands' })).toBeVisible();
-  //   console.log('✅ Brand page is open successfully');
-  // });
+  test('Verify navigation to Brands page', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'Brands' })).toBeVisible();
+    console.log('✅ Brand page is open successfully');
+  });
 
   test('Verify input field accepts valid brand name and allows submission without errors', async ({ page }) => {
     const brandInput = page.locator('input[name="name"]');

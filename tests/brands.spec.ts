@@ -4,9 +4,10 @@ const baseUrl = 'https://zealous-ground-0bb981c00.6.azurestaticapps.net/';
 
 test.describe.serial('Brands Page Tests', () => {
   let brandName: string; // shared variable across tests
-
+  let brandId: string;
   test.beforeAll(() => {
-    brandName = 'Brand Automation 26';
+    brandName = 'Brand Automation 28';
+    brandId = '413';
   });
 
   test.beforeEach(async ({ page }) => {
@@ -49,7 +50,7 @@ test.describe.serial('Brands Page Tests', () => {
 
   test('Verify Add Brand', async ({ page }) => {
     const filepath = 'C:/Users/DeepakVats/Downloads/Image.png';
-    brandName = 'Brand Automation 26'; // assign global brand name
+    //brandName = 'Brand Automation 26'; // assign global brand name
 
     await page.getByRole('button', { name: '+ Add brand' }).click();
     await page.waitForTimeout(1000);
@@ -101,5 +102,32 @@ test('Verify  Search with Brand name', async ({ page }) => {
     await expect(page.getByText('Page Size: 20 1 to 1 of 1')).toBeVisible();
     
   });
+
+test('Search by Brand ID', async ({ page }) => {
+
+  await page.getByRole('textbox', { name: 'Brand Id' }).click();
+  await page.getByRole('textbox', { name: 'Brand Id' }).fill(brandId);
+  await page.getByRole('button', { name: 'Submit' }).click();
+
+  await expect(page.getByRole('gridcell', { name: brandId })).toContainText(brandId.toString());
+
+  await page.getByRole('button', { name: 'Reset' }).click();
+  await page.getByLabel('Status').selectOption('1');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await page.getByRole('button', { name: 'Reset' }).click();
+  await page.getByLabel('Status').selectOption('0');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await page.getByRole('button', { name: 'Reset' }).click();
+  await page.getByLabel('Status').selectOption('1');
+  await page.getByLabel('Status').press('Enter');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await page.getByLabel('Warehouse').selectOption('1');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await page.getByLabel('Warehouse').selectOption('8');
+  await page.getByRole('button', { name: 'Submit' }).click();
+
+
+});
+
 
 });

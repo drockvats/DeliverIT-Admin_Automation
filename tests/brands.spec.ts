@@ -5,6 +5,10 @@ const baseUrl = 'https://zealous-ground-0bb981c00.6.azurestaticapps.net/';
 test.describe.serial('Brands Page Tests', () => {
   let brandName: string; // shared variable across tests
 
+  test.beforeAll(() => {
+    brandName = 'Brand Automation 26';
+  });
+
   test.beforeEach(async ({ page }) => {
     // Login before each test
     await page.goto(baseUrl);
@@ -18,9 +22,9 @@ test.describe.serial('Brands Page Tests', () => {
     await expect(page.getByRole('heading', { name: 'Brands' })).toBeVisible();
   });
 
-  test.afterEach(async ({ page }) => {
-    await page.close(); // closes the tab
-  });
+  // test.afterEach(async ({ page }) => {
+  //   await page.close(); // closes the tab
+  // });
 
   test('Verify Brand page URL', async ({ page }) => {
     await expect(page).toHaveURL(`${baseUrl}brand`);
@@ -81,4 +85,21 @@ test.describe.serial('Brands Page Tests', () => {
     await expect(errorMessage).toBeVisible();
     console.log(`⚠️ Brand "${brandName}" already exists`);
   });
+
+test('Verify  Search with Brand name', async ({ page }) => {
+    const brandInput = page.locator('input[name="name"]');
+    const submitButton = page.getByRole('button', { name: 'Submit' });
+    
+    //const validBrandName = 'Test';
+
+    // Enter brand name
+    await brandInput.fill(brandName);
+
+    // Submit form
+    await submitButton.click();
+
+    await expect(page.getByText('Page Size: 20 1 to 1 of 1')).toBeVisible();
+    
+  });
+
 });

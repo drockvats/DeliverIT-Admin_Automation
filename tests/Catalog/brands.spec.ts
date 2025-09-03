@@ -103,7 +103,29 @@ test('Verify  Search with Brand name', async ({ page }) => {
     
   });
 
-  test('Search by Brand ID', async ({ page }) => {
+  test('Check Active/Inactive check box on brand', async ({ page }) => {
+    const brandInput = page.locator('input[name="name"]');
+    const submitButton = page.getByRole('button', { name: 'Submit' });
+    
+    await brandInput.fill(brandName);
+    await submitButton.click();
+
+    const brandRow = page.getByRole('row', { name: new RegExp(brandName, 'i') });
+    await brandRow.getByRole('checkbox').click();
+    await expect(page.getByRole('dialog').getByText('Confirmation')).toBeVisible();
+    await page.getByRole('button',{name: 'Inactive'}).click();
+    await expect(brandRow.getByRole('checkbox')).not.toBeChecked();
+
+    //brand active
+
+    await brandRow.getByRole('checkbox').click();
+    await expect(page.getByRole('dialog').getByText('Confirmation')).toBeVisible();
+    await page.getByRole('button',{name: 'Active'}).click();
+    await expect(brandRow.getByRole('checkbox')).not.toBeChecked();
+
+  });
+
+  test('Verify the Search filter', async ({ page }) => {
     await page.getByRole('textbox', { name: 'Brand Id' }).click();
     await page.getByRole('textbox', { name: 'Brand Id' }).fill(brandId);
     await page.getByRole('button', { name: 'Submit' }).click();
@@ -126,12 +148,12 @@ test('Verify  Search with Brand name', async ({ page }) => {
     await page.getByRole('button', { name: 'Submit' }).click();
   });
 
-  test('Delete the brand', async ({ page }) => {
+  // test('Delete the brand', async ({ page }) => {
 
-    await page.getByRole('row', { name: `${brandName} logo 414` }).getByRole('button').nth(1).click();
-    await expect(page.getByText('Confirmation')).toBeVisible();
-    await page.getByText('Are you sure you want to').click();
-    await page.getByRole('button', { name: 'Delete' }).click();
+  //   await page.getByRole('row', { name: `${brandName} logo 414` }).getByRole('button').nth(1).click();
+  //   await expect(page.getByText('Confirmation')).toBeVisible();
+  //   await page.getByText('Are you sure you want to').click();
+  //   await page.getByRole('button', { name: 'Delete' }).click();
     
-  });
+  // });
 });

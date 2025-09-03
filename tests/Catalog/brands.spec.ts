@@ -6,7 +6,7 @@ test.describe.serial('Brands Page Tests', () => {
   let brandName: string; // shared variable across tests
   let brandId: string;
   test.beforeAll(() => {
-    brandName = 'Brand Automation 28';
+    brandName = 'Brand Automation 25';
     brandId = '413';
   });
 
@@ -103,31 +103,35 @@ test('Verify  Search with Brand name', async ({ page }) => {
     
   });
 
-test('Search by Brand ID', async ({ page }) => {
+  test('Search by Brand ID', async ({ page }) => {
+    await page.getByRole('textbox', { name: 'Brand Id' }).click();
+    await page.getByRole('textbox', { name: 'Brand Id' }).fill(brandId);
+    await page.getByRole('button', { name: 'Submit' }).click();
 
-  await page.getByRole('textbox', { name: 'Brand Id' }).click();
-  await page.getByRole('textbox', { name: 'Brand Id' }).fill(brandId);
-  await page.getByRole('button', { name: 'Submit' }).click();
+    await expect(page.getByRole('gridcell', { name: brandId })).toContainText(brandId.toString());
 
-  await expect(page.getByRole('gridcell', { name: brandId })).toContainText(brandId.toString());
+    await page.getByRole('button', { name: 'Reset' }).click();
+    await page.getByLabel('Status').selectOption('1');
+    await page.getByRole('button', { name: 'Submit' }).click();
+    await page.getByRole('button', { name: 'Reset' }).click();
+    await page.getByLabel('Status').selectOption('0');
+    await page.getByRole('button', { name: 'Submit' }).click();
+    await page.getByRole('button', { name: 'Reset' }).click();
+    await page.getByLabel('Status').selectOption('1');
+    await page.getByLabel('Status').press('Enter');
+    await page.getByRole('button', { name: 'Submit' }).click();
+    await page.getByLabel('Warehouse').selectOption('1');
+    await page.getByRole('button', { name: 'Submit' }).click();
+    await page.getByLabel('Warehouse').selectOption('8');
+    await page.getByRole('button', { name: 'Submit' }).click();
+  });
 
-  await page.getByRole('button', { name: 'Reset' }).click();
-  await page.getByLabel('Status').selectOption('1');
-  await page.getByRole('button', { name: 'Submit' }).click();
-  await page.getByRole('button', { name: 'Reset' }).click();
-  await page.getByLabel('Status').selectOption('0');
-  await page.getByRole('button', { name: 'Submit' }).click();
-  await page.getByRole('button', { name: 'Reset' }).click();
-  await page.getByLabel('Status').selectOption('1');
-  await page.getByLabel('Status').press('Enter');
-  await page.getByRole('button', { name: 'Submit' }).click();
-  await page.getByLabel('Warehouse').selectOption('1');
-  await page.getByRole('button', { name: 'Submit' }).click();
-  await page.getByLabel('Warehouse').selectOption('8');
-  await page.getByRole('button', { name: 'Submit' }).click();
+  test('Delete the brand', async ({ page }) => {
 
-
-});
-
-
+    await page.getByRole('row', { name: `${brandName} logo 414` }).getByRole('button').nth(1).click();
+    await expect(page.getByText('Confirmation')).toBeVisible();
+    await page.getByText('Are you sure you want to').click();
+    await page.getByRole('button', { name: 'Delete' }).click();
+    
+  });
 });

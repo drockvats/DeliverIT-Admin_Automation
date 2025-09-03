@@ -1,6 +1,6 @@
 // test-setup.ts
 import { test as base } from '@playwright/test';
-import { LoginPage } from './loginPage';
+import { LoginPage } from './Login/loginPage';
 
 const baseUrl = 'https://zealous-ground-0bb981c00.6.azurestaticapps.net/';
 

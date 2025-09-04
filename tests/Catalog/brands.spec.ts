@@ -6,7 +6,7 @@ test.describe.serial('Brands Page Tests', () => {
   let brandName: string; // shared variable across tests
   let brandId: string;
   test.beforeAll(() => {
-    brandName = 'Brand Automation 25';
+    brandName = 'Brand Automation 24';
     brandId = '413';
   });
 
@@ -148,12 +148,85 @@ test('Verify  Search with Brand name', async ({ page }) => {
     await page.getByRole('button', { name: 'Submit' }).click();
   });
 
-  // test('Delete the brand', async ({ page }) => {
+  test('edit brand functionality', async ({ page }) => {
+  const brandInput = page.locator('input[name="name"]');
+  const submitButton = page.getByRole('button', { name: 'Submit' });
 
-  //   await page.getByRole('row', { name: `${brandName} logo 414` }).getByRole('button').nth(1).click();
-  //   await expect(page.getByText('Confirmation')).toBeVisible();
-  //   await page.getByText('Are you sure you want to').click();
-  //   await page.getByRole('button', { name: 'Delete' }).click();
+  // Search the brand
+  await brandInput.fill(brandName);
+  await submitButton.click();
+
+  // Find the brand row
+  const brandRow = page.getByRole('row', { name: new RegExp(brandName, 'i') });
+  await expect(brandRow).toBeVisible();
+
+  // Click the edit (pencil) button inside that row
+  await brandRow.locator('button:has(i.fa-pencil)').click();
+
+  // Wait for dialog to open
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+
+  // Validate title input is not empty
+  const titleInput = dialog.locator('input[name="title"]');
+  await expect(titleInput).not.toHaveValue('');
+
+  // Update brand name
+  const updatedName = brandName + ' Updated';
+  await titleInput.fill(updatedName);
+
+  // Validate combobox is not empty
+  const comboBox = dialog.getByRole('combobox');
+  await expect(comboBox).not.toHaveValue('');  // 🔑 non-empty check
+
+  // Re-select option (if required)
+  await comboBox.selectOption('1');
+  await expect(comboBox).toHaveValue('1');     // confirm correct selection
+
+  // Submit changes
+  await dialog.getByRole('button', { name: 'Submit' }).click();
+
+  // Validate success OR already exists
+  const successMessage = page.getByText(/success/i);
+  const errorMessage = page.getByText(/Record already exists/i);
+
+  if (await successMessage.isVisible()) {
+    console.log(`✅ Brand "${updatedName}" updated successfully`);
+    await expect(successMessage).toBeVisible();
+    await expect(page.getByRole('row', { name: new RegExp(updatedName, 'i') })).toBeVisible();
+  } else {
+    console.log(`⚠️ Brand "${updatedName}" already exists`);
+    await expect(errorMessage).toBeVisible();
+  }
+});
+
+
+  test('Delete the brand', async ({ page }) => {
+  
+   const brandInput = page.locator('input[name="name"]');
+  const submitButton = page.getByRole('button', { name: 'Submit' });
+
+  // Search the brand
+  await brandInput.fill(brandName);
+  await submitButton.click();
+
+  // Locate the row for the brand
+  const brandRow = page.getByRole('row', { name: new RegExp(brandName, 'i') });
+  await expect(brandRow).toBeVisible();
+
+  // Click the delete (trash) button inside the row
+  await brandRow.locator('button:has(i.fa-trash)').click();
+
+  // Handle confirmation dialog
+  await expect(page.getByRole('dialog')).toContainText('Are you sure you want to');
+  await page.getByRole('button', { name: 'Delete' }).click();
+
+  // (Optional) Verify brand row is gone
+  await expect(brandRow).toHaveCount(0);
     
-  // });
+  });
+
+
+  
+
 });

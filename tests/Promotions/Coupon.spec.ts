@@ -93,18 +93,32 @@ test.describe.serial('Coupon Page Tests', () => {
 
   });
 
-  test('Coupon Active/Inactive', async({page}) => {
-    
-    await page.getByRole('textbox', { name: 'Coupon Code' }).click();
-    await page.getByRole('textbox', { name: 'Coupon Code' }).fill('CO100');
-    await page.getByRole('button', { name: 'Submit' }).click();
+test('Coupon Active/Inactive', async ({ page }) => {
+  const couponCode = 'CO100';
 
-    const couponRow = page.locator('div', { hasText: couponCode });
-    await couponRow.getByRole('checkbox').click();;
-    await expect(page.getByRole('dialog').getByText('Confirmation')).toBeVisible();
-    await page.getByRole('button',{name: 'Inactive'}).click();
-    await expect(couponRow.getByRole('checkbox')).not.toBeChecked();
+  // Search coupon
+  await page.getByRole('textbox', { name: 'Coupon Code' }).fill(couponCode);
+  await page.getByRole('button', { name: 'Submit' }).click();
 
-  });
+  // Wait until row with couponCode is visible
+  const couponRow = page.locator('.ag-center-cols-container').locator(`text=${couponCode}`);
+  await expect(couponRow).toBeVisible({ timeout: 10000 });
+
+  // Get the checkbox inside the same row
+  const checkbox = couponRow.locator('xpath=..').locator('input.form-check-input');
+
+  // Toggle inactive
+  await checkbox.click();
+  await expect(page.getByRole('dialog').getByText('Confirmation')).toBeVisible();
+  await page.getByRole('button', { name: 'Inactive' }).click();
+  await expect(checkbox).not.toBeChecked();
+
+  // Toggle active again
+  await checkbox.click();
+  await expect(page.getByRole('dialog').getByText('Confirmation')).toBeVisible();
+  await page.getByRole('button', { name: 'Active' }).click();
+  await expect(checkbox).toBeChecked();
+});
+
 
     });

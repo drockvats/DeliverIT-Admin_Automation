@@ -6,7 +6,7 @@ test.describe.serial('Brands Page Tests', () => {
   let brandName: string; // shared variable across tests
   let brandId: string;
   test.beforeAll(() => {
-    brandName = 'Brand Automation 25';
+    brandName = 'Brand Automation 30';
     brandId = '413';
   });
 

@@ -81,7 +81,6 @@ test.describe.serial('Coupon Page Tests', () => {
   await page.getByRole('textbox', { name: 'Minimum Cart Value' }).fill('1000');
   await page.getByRole('textbox', { name: 'Discount', exact: true }).click();
   await page.getByRole('button', { name: 'New Users' }).click();
-  await page.getByRole('button', { name: 'New Users' }).click();
   await page.getByRole('button', { name: 'One-time' }).click();
   await page.getByPlaceholder('Start Date').fill('2025-09-03');
   await page.getByPlaceholder('End Date').fill('2025-09-04');
@@ -119,6 +118,109 @@ test('Coupon Active/Inactive', async ({ page }) => {
   await page.getByRole('button', { name: 'Active' }).click();
   await expect(checkbox).toBeChecked();
 });
+
+test('Verify Is Hidden toggle works', async ({ page }) => {
+  await page.getByRole('link', { name: '+ Add Coupon' }).click();
+  await page.getByRole('checkbox', { name: 'Is Hidden' }).check();
+  await expect(page.getByRole('checkbox', { name: 'Is Hidden' })).toBeChecked();
+
+  await page.getByRole('checkbox', { name: 'Is Hidden' }).uncheck();
+  await expect(page.getByRole('checkbox', { name: 'Is Hidden' })).not.toBeChecked();
+});
+
+
+test('Create coupon for specific user', async ({ page }) => {
+  
+  // Generate unique coupon code
+  const couponCode = `USR${Date.now()}`;
+  
+  // Open Add Coupon form
+  await page.getByRole('link', { name: '+ Add Coupon' }).click();
+  await expect(page.getByRole('heading', { name: 'Add Coupon' })).toBeVisible();
+
+  // Fill coupon details
+  await page.locator('select[name="ware_house_id"]').selectOption('1');
+  await page.getByRole('textbox', { name: 'Title' }).fill('User Special Coupon');
+  await page.getByRole('textbox', { name: 'Coupon Code' }).fill(couponCode);
+  await page.locator('select[name="discountType"]').selectOption('2'); // Percentage
+  await page.getByRole('textbox', { name: 'Discount', exact: true }).fill('10');
+  await page.getByRole('textbox', { name: 'Max Discount Amount' }).fill('100');
+  await page.getByRole('textbox', { name: 'Minimum Cart Value' }).fill('500');
+
+  // Select Specific User
+  await page.getByRole('button', { name: 'Specific User' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('dialog').getByRole('heading', { name: 'Select User' })).toBeVisible();
+  await page.getByRole('textbox', { name: 'Search Name..' }).fill('6500');
+  await page.getByRole('checkbox', { name: 'Burari Outlet undefined-' }).check();
+  await page.getByRole('button', { name: 'Save' }).click();
+
+  //Select Frequecy
+
+  await page.getByRole('button', { name: 'One-time' }).click();
+
+  //Select order type Standard or Quick
+
+  await page.locator('select[name="orderType"]').selectOption('quick delivery');
+
+  // Dates and description
+  await page.getByPlaceholder('Start Date').fill('2025-09-07');
+  await page.getByPlaceholder('End Date').fill('2025-09-15');
+  await page.getByRole('textbox', { name: 'Description' }).fill('Special 10% OFF for user 6500');
+
+  // Submit and verify success
+  await page.getByRole('button', { name: 'Submit' }).click();
+
+  await expect(page.getByRole('alert').filter({ hasText: 'success' })).toBeVisible();
+
+
+});
+
+test('Delete Coupon', async ({ page }) => {
+  const couponCode = `USR${Date.now()}`;
+  
+  // Open Add Coupon form
+  await page.getByRole('link', { name: '+ Add Coupon' }).click();
+  await expect(page.getByRole('heading', { name: 'Add Coupon' })).toBeVisible();
+
+  // Fill coupon details
+  await page.locator('select[name="ware_house_id"]').selectOption('1');
+  await page.getByRole('textbox', { name: 'Title' }).fill('User Special Coupon');
+  await page.getByRole('textbox', { name: 'Coupon Code' }).fill(couponCode);
+  await page.locator('select[name="discountType"]').selectOption('2'); // Percentage
+  await page.getByRole('textbox', { name: 'Discount', exact: true }).fill('10');
+  await page.getByRole('textbox', { name: 'Max Discount Amount' }).fill('100');
+  await page.getByRole('textbox', { name: 'Minimum Cart Value' }).fill('500');
+  await page.getByRole('button', { name: 'All User' }).click();
+  await page.getByRole('button', { name: 'One-time' }).click();
+  await page.getByPlaceholder('Start Date').fill('2025-09-07');
+  await page.getByPlaceholder('End Date').fill('2025-09-15');
+  await page.getByRole('textbox', { name: 'Description' }).fill('Delete test coupon');
+
+  // Submit
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.getByRole('alert').filter({ hasText: 'success' })).toBeVisible();
+  console.log(`Created coupon: ${couponCode}`);
+
+  // Delete coupon (using trash button)
+
+  await page.getByRole('textbox', { name: 'Coupon Code' }).fill(couponCode);
+  await page.getByRole('button', { name: 'Submit' }).click();
+
+  const couponRow = page.getByRole('row', { name: new RegExp(couponCode, 'i') });
+    await expect(couponRow).toBeVisible();
+
+    await couponRow.locator('button:has(i.fa-trash)').click();
+
+  // Confirm deletion
+  await expect(page.getByText('Confirmation')).toBeVisible();
+  await page.getByRole('button', { name: 'delete' }).click();
+
+  // Verify deletion success
+  await expect(page.getByRole('alert').filter({ hasText: 'success' })).toBeVisible();
+});
+
+
 
 
     });

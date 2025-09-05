@@ -9,8 +9,8 @@ test.describe.serial('Coupon Page Tests', () => {
     let couponTitle: string;
 
     test.beforeAll(() => {
-    couponCode = "TC00012";
-    couponTitle = "Test 00012";
+    couponCode = `USR${Date.now()}`;
+    couponTitle = 'Test ${Date.now()}';
   });
  
   test.beforeEach(async ({ page }) => {
@@ -164,7 +164,7 @@ test('Create coupon for specific user', async ({ page }) => {
   await page.locator('select[name="orderType"]').selectOption('quick delivery');
 
   // Dates and description
-  await page.getByPlaceholder('Start Date').fill('2025-09-07');
+  await page.getByPlaceholder('Start Date').fill('2025-09-05');
   await page.getByPlaceholder('End Date').fill('2025-09-15');
   await page.getByRole('textbox', { name: 'Description' }).fill('Special 10% OFF for user 6500');
 
@@ -172,7 +172,6 @@ test('Create coupon for specific user', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
 
   await expect(page.getByRole('alert').filter({ hasText: 'success' })).toBeVisible();
-
 
 });
 
@@ -193,7 +192,7 @@ test('Delete Coupon', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Minimum Cart Value' }).fill('500');
   await page.getByRole('button', { name: 'All User' }).click();
   await page.getByRole('button', { name: 'One-time' }).click();
-  await page.getByPlaceholder('Start Date').fill('2025-09-07');
+  await page.getByPlaceholder('Start Date').fill('2025-09-05');
   await page.getByPlaceholder('End Date').fill('2025-09-15');
   await page.getByRole('textbox', { name: 'Description' }).fill('Delete test coupon');
 
@@ -218,8 +217,9 @@ test('Delete Coupon', async ({ page }) => {
 
   // Verify deletion success
   await expect(page.getByRole('alert').filter({ hasText: 'success' })).toBeVisible();
-});
 
+  console.log(`coupon is Deleted: ${couponCode}`);
+});
 
 
 

@@ -1,21 +1,29 @@
 import { test, expect } from '@playwright/test';
 
-const baseUrl = 'https://zealous-ground-0bb981c00.6.azurestaticapps.net/';
+const baseUrl = 'https://admin-qa.deliverit.net.in';
 
 test.describe.serial('Brands Page Tests', () => {
   let brandName: string; // shared variable across tests
   let brandId: string;
   test.beforeAll(() => {
-    brandName = 'Brand Automation 25';
+    brandName = 'Brand Automation E1';
     brandId = '413';
   });
 
   test.beforeEach(async ({ page }) => {
     // Login before each test
     await page.goto(baseUrl);
-    await page.getByRole('textbox', { name: 'Email' }).fill('admin@deliverit.com');
-    await page.getByRole('textbox', { name: 'Password' }).fill('Sadmin#DIT@Uh$2025');
+    await page.getByRole('textbox', { name: 'Email' }).fill('Deepak.vats@uharvest.in');
+    await page.getByRole('textbox', { name: 'Password' }).fill('Drock@9045');
     await page.getByRole('button', { name: 'Log in' }).click();
+
+    await page.getByRole('textbox', { name: 'Please enter OTP character 1' }).fill('1');
+  await page.getByRole('textbox', { name: 'Please enter OTP character 2' }).fill('3');
+  await page.getByRole('textbox', { name: 'Please enter OTP character 3' }).fill('5');
+  await page.getByRole('textbox', { name: 'Please enter OTP character 4' }).fill('7');
+  await page.getByRole('textbox', { name: 'Please enter OTP character 5' }).fill('9');
+  await page.getByRole('textbox', { name: 'Please enter OTP character 6' }).fill('0');
+  await page.getByRole('button', { name: 'Verify OTP' }).click();
 
     // Navigate to the Brand page
     await page.locator('span', { hasText: 'Catalog' }).locator('i').click();
@@ -28,7 +36,7 @@ test.describe.serial('Brands Page Tests', () => {
   // });
 
   test('Verify Brand page URL', async ({ page }) => {
-    await expect(page).toHaveURL(`${baseUrl}brand`);
+    await expect(page).toHaveURL(`${baseUrl}/brand`);
     console.log('✅ Brand URL is correct');
   });
 

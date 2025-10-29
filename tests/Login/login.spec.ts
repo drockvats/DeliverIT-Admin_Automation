@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from './loginPage';
  
-const baseUrl = 'https://zealous-ground-0bb981c00.6.azurestaticapps.net/';
+const baseUrl = 'https://admin-qa.deliverit.net.in';
 
 test.describe('Login Page Tests', () => {
     let loginPage: LoginPage;
@@ -23,11 +23,11 @@ test.describe('Login Page Tests', () => {
     });
 
     test('should allow user to enter email', async () => {
-  await loginPage.enterEmail('admin@deliverit.com');
-  await expect(loginPage.emailInput).toHaveValue('admin@deliverit.com');
+  await loginPage.enterEmail('Deepak.vats@uharvest.in');
+  await expect(loginPage.emailInput).toHaveValue('Deepak.vats@uharvest.in');
 
-  await loginPage.enterPassword('Sadmin#DIT@Uh$2025');
-    await expect(loginPage.passwordInput).toHaveValue('Sadmin#DIT@Uh$2025');
+  await loginPage.enterPassword('Drock@9045');
+    await expect(loginPage.passwordInput).toHaveValue('Drock@9045');
     await loginPage.clickLoginButton();
     await loginPage.clickLogoutButton();
     });

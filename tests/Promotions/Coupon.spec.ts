@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { Console } from 'console';
 
-const baseUrl = 'https://zealous-ground-0bb981c00.6.azurestaticapps.net/';
+const baseUrl = 'https://admin-qa.deliverit.net.in/';
 
 test.describe.serial('Coupon Page Tests', () => {
 

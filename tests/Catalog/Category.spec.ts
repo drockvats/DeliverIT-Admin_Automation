@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const baseUrl = 'https://zealous-ground-0bb981c00.6.azurestaticapps.net/';
+const baseUrl = 'https://admin-qa.deliverit.net.in/';
 
 test.describe.serial('Brands Page Tests', () => {
   let catName: string; // shared variable across tests

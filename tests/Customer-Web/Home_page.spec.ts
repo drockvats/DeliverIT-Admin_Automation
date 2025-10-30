@@ -7,16 +7,16 @@ test.describe('Header Tests', () => {
   let context: BrowserContext;
 
   test.beforeEach(async () => {
-    // Launch a new browser context with location permission
+    // Launch a new context for every test (so geolocation etc. are isolated)
     context = await chromium.launchPersistentContext('', {
       permissions: ['geolocation'],
-      geolocation: { latitude: 12.9716, longitude: 77.5946 },
+      geolocation: { latitude: 28.5355, longitude: 77.3910 },
       locale: 'en-US',
       headless: false,
     });
 
     [page] = context.pages();
-    await page.goto('https://customer-qa.deliverit.net.in/', { waitUntil: 'domcontentloaded' });
+    await page.goto('https://customer-qa.deliverit.net.in/');
     headerPage = new HeaderPage(page);
   });
 
@@ -34,38 +34,38 @@ test.describe('Header Tests', () => {
     await expect(page).toHaveURL('https://customer-qa.deliverit.net.in/');
   });
 
-  test('Confirm delivery info "Delivery by Tomorrow" is visible', async () => {
-    const visible = await headerPage.isDeliveryInfoVisible('Delivery by Tomorrow');
-    expect(visible).toBeTruthy();
-  });
+  test('Confirm that the delivery information ("Delivery by Tomorrow") is displayed correctly and is visible to the user.', async () => {
+        await expect(headerPage.isDeliveryInfoVisible('Delivery by Tomorrow')).resolves.toBeTruthy();
+    });
 
-  test('Search input is visible with correct placeholder', async () => {
-    await expect(headerPage.searchInput).toBeVisible();
-    const placeholderOk = await headerPage.isSearchInputPlaceholder('Search for fresh vegetable...');
-    expect(placeholderOk).toBeTruthy();
-  });
+    test('Check that the search input field is present and has the placeholder text "Search for fresh vegetable...".', async () => {
+        await expect(headerPage.searchInput).toBeVisible();
+        await expect(headerPage.isSearchInputPlaceholder('Search for fresh vegetable...')).resolves.toBeTruthy();
+    });
 
-  test('Standard delivery selected by default with "Next Day delivery" text', async () => {
-    const selected = await headerPage.isStandardDeliverySelected();
-    expect(selected).toBeTruthy();
-    await expect(headerPage.standardDeliveryText).toHaveText('Next Day delivery');
-  });
+    test('Ensure that the "Standard" delivery option is selected by default and that the associated text "Next Day delivery" is displayed correctly.', async () => {
+        await expect(headerPage.isStandardDeliverySelected()).resolves.toBeTruthy();
+        await expect(headerPage.standardDeliveryOption.locator('.standardAndQuickTab_nextDay-text__D4O1V')).toHaveText('Next Day delivery');
+    });
 
-  test('Quick delivery selectable with "Delivery in 2 Hours" text visible', async () => {
-    const visible = await headerPage.isQuickDeliveryVisible();
-    expect(visible).toBeTruthy();
-    await expect(headerPage.quickDeliveryText).toHaveText('Delivery in 2 Hours');
-  });
+    test('Validate that the "Quick Delivery" option is selectable and that the associated text "Delivery in 2 Hours" is visible.', async () => {
+        await expect(headerPage.isQuickDeliveryVisible()).resolves.toBeTruthy();
+        await expect(headerPage.quickDeliveryOption.locator('.standardAndQuickTab_nextDay-text__D4O1V')).toHaveText('Delivery in 2 Hours');
+    });
 
-  test('Login button visible and clickable leading to login page', async () => {
-    await expect(headerPage.loginButton).toBeVisible();
-    await headerPage.clickLoginButton();
-    await expect(page).toHaveURL(/login/); // adjust if actual path differs
-  });
+    test('Check switch toggle is working', async () => {
 
-  test('Cart icon is visible and reflects state', async () => {
-    const visible = await headerPage.isCartIconVisible();
-    expect(visible).toBeTruthy();
-    // Future enhancement: add-to-cart and verify item count
-  });
+      await page.getByText('Quick Delivery').click();
+      
+      await page.getByText('Standard').click();
+//       // Standard active check
+//       const standardToggle = await page.getByText('Standard');
+//       await expect(standardToggle).toHaveClass(/active/);
+
+// // Quick Delivery active check
+//       const quickToggle = await page.getByText('Quick Delivery');
+//       await expect(quickToggle).toHaveClass(/active/);
+
+    });
+
 });

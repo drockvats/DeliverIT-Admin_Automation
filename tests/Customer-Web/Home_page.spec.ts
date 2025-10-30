@@ -56,6 +56,8 @@ test.describe('Header Tests', () => {
     test('Check switch toggle is working', async () => {
 
       await page.getByText('Quick Delivery').click();
+
+      
       
       await page.getByText('Standard').click();
 //       // Standard active check

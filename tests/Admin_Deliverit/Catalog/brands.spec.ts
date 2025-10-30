@@ -6,7 +6,7 @@ test.describe.serial('Brands Page Tests (Context-Based Login)', () => {
   let browser: Browser;
   let page: Page;
   let brandName = 'Brand Automation E1';
-  let brandId = '413';
+  let brandId = '428';
 
   // ✅ Setup shared browser + context before all tests
   test.beforeAll(async () => {
@@ -18,20 +18,9 @@ test.describe.serial('Brands Page Tests (Context-Based Login)', () => {
     page.on('console', msg => console.log('PAGE LOG:', msg.text()));
     page.on('response', res => console.log('➡️', res.status(), res.url()));
 
-    try {
-      // Try direct access using saved auth
-      await page.goto(`${baseUrl}/brand`, { waitUntil: 'networkidle' });
-      await expect(page).toHaveURL(`${baseUrl}/brand`, { timeout: 15000 });
-    } catch {
-      // ⚠️ If session expired, login again
-      console.log('⚠️ Auth session expired. Logging in again...');
-      await page.goto(`${baseUrl}/login`);
-      await page.fill('input[name="email"]', 'admin@example.com');
-      await page.fill('input[name="password"]', 'password123');
-      await page.click('button[type="submit"]');
-      await page.waitForURL(`${baseUrl}/brand`);
-      await context.storageState({ path: 'auth.json' });
-    }
+   await page.goto(`${baseUrl}/brand`, { waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { name: 'Brands' })).toBeVisible();
+
 
     await expect(page.getByRole('heading', { name: 'Brands' })).toBeVisible();
   });

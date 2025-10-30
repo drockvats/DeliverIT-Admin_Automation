@@ -16,9 +16,9 @@ test.describe.serial('Coupon Page Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Login before each test
     await page.goto(baseUrl);
-    await page.getByRole('textbox', { name: 'Email' }).fill('admin@deliverit.com');
-    await page.getByRole('textbox', { name: 'Password' }).fill('Sadmin#DIT@Uh$2025');
-    await page.getByRole('button', { name: 'Log in' }).click();
+    // await page.getByRole('textbox', { name: 'Email' }).fill('admin@deliverit.com');
+    // await page.getByRole('textbox', { name: 'Password' }).fill('Sadmin#DIT@Uh$2025');
+    // await page.getByRole('button', { name: 'Log in' }).click();
 
     //Navigate to the coupon page
 
@@ -128,12 +128,19 @@ test('Coupon Active/Inactive', async ({ page }) => {
   await checkbox.click();
   await expect(page.getByRole('dialog').getByText('Confirmation')).toBeVisible();
   await page.getByRole('button', { name: 'Inactive' }).click();
+
+  await page.getByRole('textbox', { name: 'Coupon Code' }).fill(couponCode);
+  await page.getByRole('button', { name: 'Submit' }).click();
+
   await expect(checkbox).not.toBeChecked();
 
   // Toggle active again
   await checkbox.click();
   await expect(page.getByRole('dialog').getByText('Confirmation')).toBeVisible();
   await page.getByRole('button', { name: 'Active' }).click();
+
+  await page.getByRole('textbox', { name: 'Coupon Code' }).fill(couponCode);
+  await page.getByRole('button', { name: 'Submit' }).click();
   await expect(checkbox).toBeChecked();
 });
 
